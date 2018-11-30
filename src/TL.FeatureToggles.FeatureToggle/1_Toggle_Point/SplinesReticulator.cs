@@ -4,9 +4,9 @@ namespace TL.FeatureToggles.TogglePoint
 {
     public class SplinesReticulator
     {
-        private readonly ToggleRouter _features;
+        private readonly IToggleRouter _features;
 
-        public SplinesReticulator(ToggleRouter features)
+        public SplinesReticulator(IToggleRouter features)
         {
             _features = features;
         }
