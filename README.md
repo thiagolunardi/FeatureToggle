@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/9x6n6hi8mroueki5?svg=true)](https://ci.appveyor.com/project/thiagolunardi/featuretoggle)
+
 # Feature Toggles (aka Feature Flags)
 
 [by Martin Fowler](https://martinfowler.com/articles/feature-toggles.html)
