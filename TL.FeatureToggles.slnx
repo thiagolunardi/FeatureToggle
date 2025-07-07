@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/TL.FeatureToggles.FeatureToggle/TL.FeatureToggles.csproj" />
+  <Project Path="tests/TL.FeatureToggles.Tests/TL.FeatureToggles.Tests.csproj" />
+</Solution>
