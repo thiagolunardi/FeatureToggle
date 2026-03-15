@@ -1,4 +1,5 @@
 [![CI](https://github.com/thiagolunardi/FeatureToggle/actions/workflows/ci.yml/badge.svg)](https://github.com/thiagolunardi/FeatureToggle/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/thiagolunardi/FeatureToggle/branch/master/graph/badge.svg)](https://codecov.io/gh/thiagolunardi/FeatureToggle)
 
 # Feature Toggles (aka Feature Flags)
 
