@@ -14,7 +14,7 @@ A Toggle Router which can be used to dynamically control which codepath is live.
 `IToggleRouter.cs`
 
 ```csharp
-interface IToggleRouter
+public interface IToggleRouter
 {
     bool IsEnabled(string featureName);
     void SetFeature(string featureName, bool isEnabled);
@@ -26,12 +26,14 @@ You'll need to be able to enable or disable the Feature dynamically:
 `SplinesReticulator.cs`
 
 ```csharp
-public Splines[] ReticulateSplines()
+public class SplinesReticulator(IToggleRouter features)
 {
-    if (_features.IsEnabled("use-new-SR-algorithm"))
-        return EnhancedSplineReticulation();
-    else
-        return OldFashionedSplineReticulation();
+    public Splines[] ReticulateSplines()
+    {
+        return features.IsEnabled("use-new-SR-algorithm")
+            ? EnhancedSplineReticulation()
+            : OldFashionedSplineReticulation();
+    }
 }
 ```
 
@@ -69,17 +71,10 @@ Happily, [any problem in software can be solved by adding a layer of indirection
 `FeatureDecisions.cs`
 
 ```csharp
-public class FeatureDecisions
+public class FeatureDecisions(IToggleRouter features)
 {
-    private readonly ToggleRouter _features;
-
-    public FeatureDecisions(IToggleRouter features)
-    {
-        _features = features;
-    }
-
     public bool IncludeOrderCancellationInEmail()
-        => _features.IsEnabled("next-gen-ecomm");
+        => features.IsEnabled("next-gen-ecomm");
 }
 ```
 
@@ -90,12 +85,11 @@ Here's how we might decouple our invoice emailer from our feature flagging infra
 ```csharp
 public Email GenerateInvoiceEmail()
 {
-    var baseEmail = BuildEmailForInvoice(this.Invoice);
+    var baseEmail = BuildEmailForInvoice(Invoice);
 
-    if (_featureDecisions.IncludeOrderCancellationInEmail())
-        return AddOrderCancellationInEmail(baseEmail);
-    else
-        return baseEmail;
+    return _featureDecisions.IncludeOrderCancellationInEmail()
+        ? AddOrderCancellationInEmail(baseEmail)
+        : baseEmail;
 }
 ```
 
@@ -127,12 +121,11 @@ In software design we can often solve these coupling issues by applying Inversio
 ```csharp
 public Email GenerateInvoiceEmail()
 {
-    var baseEmail = BuildEmailForInvoice(_invoice);
+    var baseEmail = BuildEmailForInvoice(invoice);
 
-    if (_config.AddOrderCancellationContentToEmail)
-        return AddOrderCancellationInEmail(baseEmail);
-    else
-        return baseEmail;
+    return config.AddOrderCancellationContentToEmail
+        ? AddOrderCancellationInEmail(baseEmail)
+        : baseEmail;
 }
 ```
 
@@ -140,10 +133,12 @@ public Email GenerateInvoiceEmail()
 
 ```csharp
 public InvoiceEmailer CreateInvoiceEmailer(Invoice invoice)
-    => new InvoiceEmailer(invoice, new InvoiceEmailerConfig
+{
+    return new InvoiceEmailer(invoice, new InvoiceEmailerConfig
     {
         AddOrderCancellationContentToEmail = _featureDecisions.IncludeOrderCancellationInEmail()
     });
+}
 ```
 
 This also makes testing `InvoiceEmailler`'s behavior easier - we can test the way that it generates emails both with and without order cancellation content just by passing a different configuration option during test:
@@ -186,11 +181,11 @@ public Email GenerateInvoiceEmail(Invoice invoice)
 ```csharp
 public InvoiceEmailer CreateInvoiceEmailer()
 {
-    Func<Email, Email> identifyFn = x => x;
+    Email IdentifyFn(Email x) => x;
 
     return _featureDecisions.IncludeOrderCancellationInEmail()
         ? new InvoiceEmailer(InvoiceEmailer.AddOrderCancellationInEmail)
-        : new InvoiceEmailer(identifyFn);
+        : new InvoiceEmailer(IdentifyFn);
 }
 ```
 
