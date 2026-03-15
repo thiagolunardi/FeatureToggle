@@ -22,6 +22,8 @@ x86/
 bld/
 src/**/[Bb]in/
 src/**/[Oo]bj/
+tests/**/[Bb]in/
+tests/**/[Oo]bj/
 [Ll]og/
 
 # Visual Studio 2015/2017 cache/options directory
