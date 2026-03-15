@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TL.FeatureToggles
+namespace TL.FeatureToggles;
+
+public class ToggleRouter : IToggleRouter
 {
-    public class ToggleRouter : IToggleRouter
+    private readonly Dictionary<string, bool> _featureConfig = new();
+
+    public void SetFeature(string featureName, bool isEnabled)
     {
-        private Dictionary<string, bool> _featureConfig = new Dictionary<string, bool>();
+        AssertFeatureName(featureName);
 
-        public void SetFeature(string featureName, bool isEnabled)
+        if (_featureConfig.TryGetValue(featureName, out var value))
         {
-            AssertFeatureName(featureName);
-
-            if (_featureConfig.TryGetValue(featureName, out var value))
-            {
-                if (value.Equals(isEnabled)) return;
-                _featureConfig.Remove(featureName);
-            }
-            _featureConfig.Add(featureName, isEnabled);
+            if (value.Equals(isEnabled)) return;
+            _featureConfig.Remove(featureName);
         }
 
-        private static void AssertFeatureName(string featureName)
-        {
-            if (string.IsNullOrEmpty(featureName) || string.IsNullOrWhiteSpace(featureName))
-                throw new ArgumentNullException(nameof(featureName));
-        }
+        _featureConfig.Add(featureName, isEnabled);
+    }
 
-        public bool IsEnabled(string featureName)
-        {
-            AssertFeatureName(featureName);
+    public bool IsEnabled(string featureName)
+    {
+        AssertFeatureName(featureName);
 
-            _featureConfig.TryGetValue(featureName, out var isEnabled);
-            return isEnabled;
-        }
+        return _featureConfig.GetValueOrDefault(featureName, false);
+    }
+
+    private static void AssertFeatureName(string featureName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(featureName);
     }
 }

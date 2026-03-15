@@ -1,8 +1,7 @@
-﻿namespace TL.FeatureToggles
+﻿namespace TL.FeatureToggles;
+
+public interface IToggleRouter
 {
-    public interface IToggleRouter
-    {
-        bool IsEnabled(string featureName);
-        void SetFeature(string featureName, bool isEnabled);
-    }
+    bool IsEnabled(string featureName);
+    void SetFeature(string featureName, bool isEnabled);
 }
