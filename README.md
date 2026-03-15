@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/9x6n6hi8mroueki5?svg=true)](https://ci.appveyor.com/project/thiagolunardi/featuretoggle)
+[![CI](https://github.com/thiagolunardi/FeatureToggle/actions/workflows/ci.yml/badge.svg)](https://github.com/thiagolunardi/FeatureToggle/actions/workflows/ci.yml)
 
 # Feature Toggles (aka Feature Flags)
 
